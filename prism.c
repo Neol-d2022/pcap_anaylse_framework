@@ -44,7 +44,7 @@ int handler_prism(const unsigned char *p, void *param, unsigned int len) {
 		return -1;
 	}
 	
-	//handler_80211(p + mlen, param, len - mlen);
+	handler_80211(p + mlen, param, len - mlen);
 	
 	return result;
 }
