@@ -14,17 +14,18 @@ int handler_ip(const unsigned char *p, void *param, unsigned int len) {
 	switch(protocol) {
 		case 0x06: {
 			//TCP
-			return handler_tcp(p + headerLength, param, len - headerLength);
+			return handler_tcp(p + headerLength, (unsigned char*)p + 12, len - headerLength);
 		}
 		case 0x11: {
 			//UDP
-			return handler_udp(p + headerLength, param, len - headerLength);
+			return handler_udp(p + headerLength, (unsigned char*)p + 12, len - headerLength);
 		}
 		default: {
-			fprintf(stderr, "[IP HEADER]\nUnknown IP protocol in the packet(0x%08hX).\n", protocol);
+			//fprintf(stderr, "0x%02hhX  0x%02hhX  0x%02hhX  0x%02hhX  0x%02hhX  0x%02hhX  0x%02hhX  0x%02hhX", p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
+			fprintf(stderr, "[IP HEADER] Unknown IP protocol in the packet(0x%08hX).\n", protocol);
 			break;
 		}
 	}
 	
-	return -1;
+	return 0;
 }

@@ -25,7 +25,7 @@ int handler_prism(const unsigned char *p, void *param, unsigned int len) {
 			dr = little;
 			break;
 		default:
-			fprintf(stderr, "[PRISM HEADER]\nUnknown endian type in the packet.\n");
+			fprintf(stderr, "[PRISM HEADER] Unknown endian type in the packet.\n");
 			return -1;
 	}
 	

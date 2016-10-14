@@ -9,6 +9,7 @@ typedef struct {
 } handler;
 
 int handler_prism(const unsigned char *p, void *param, unsigned int len); //prism.c
+unsigned int connCount(void); //connM.c
 
 static handler handlers[] = {
 	{119, handler_prism}
@@ -59,12 +60,12 @@ int main(int argc, char **argv) {
 		ph = h->phdler;
 		while((p = pcap_next(pf, &phdr))) {
 			result = ph(p, 0, phdr.len);
-			if(result == -1) break;
+			//if(result == -1) break;
 		}
 	
 		pcap_close(pf);
 	}
 	
-	
+	printf("%u\n", connCount());
 	return result;
 }
