@@ -5,7 +5,7 @@ LIBS=-lpcap
 CFLAGS=-Wall -Wextra -Ofast
 LFLAGS=-s $(LIBS)
 
-OBJS=main.o prism.o datareader.o ieee80211.o llc.o
+OBJS=main.o prism.o datareader.o ieee80211.o llc.o ip.o tcp.o udp.o
 DEPS=datareader.h
 
 BIN=pcap_test

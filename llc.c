@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+int handler_ip(const unsigned char *p, void *param, unsigned int len); //ip.c
+
 int handler_llc(const unsigned char *p, void *param, unsigned int len) {
 	unsigned char dsap, ssap;
 	unsigned short control, etherType;
@@ -12,11 +14,11 @@ int handler_llc(const unsigned char *p, void *param, unsigned int len) {
 		org = (p[3] << 16) | (p[4] << 8) | p[5];
 		if(control == 0x03 && org == 0) {
 			//Ether
+			if(len < 7) return -1;
 			etherType = (p[6] << 8) | p[7];
 			switch(etherType) {
 				case 0x0800: {
-					//IP
-					break;
+					return handler_ip(p + 7, param, len - 7);
 				}
 				/*case 0x0806: {
 					//ARP
