@@ -24,9 +24,27 @@ static int cmpHandlers(const void *a, const void *b) {
 	return (c->protocol > d->protocol) ? 1 : ((c->protocol < d->protocol) ? -1 : 0);
 }
 
+static struct timeval tvdiff(struct timeval a, struct timeval b) {
+	struct timeval c;
+
+	if(a.tv_sec < b.tv_sec) return tvdiff(b, a);
+	else if(a.tv_sec == b.tv_sec && a.tv_usec < b.tv_usec) return tvdiff(b, a);
+
+	c.tv_sec = a.tv_sec - b.tv_sec;
+	c.tv_usec = a.tv_usec - b.tv_usec;
+	if(c.tv_usec < 0) {
+		c.tv_sec -= 1;
+		c.tv_usec = 1 - c.tv_usec;
+	} 
+
+	return c;
+}
+
 int main(int argc, char **argv) {
 	char errbuf[PCAP_ERRBUF_SIZE];
 	struct pcap_pkthdr phdr;
+	struct timeval tv, relateTv;
+	double arrTime;
 	handler key;
 	pcap_t *pf;
 	handler *h;
@@ -58,14 +76,24 @@ int main(int argc, char **argv) {
 		}
 	
 		ph = h->phdler;
-		while((p = pcap_next(pf, &phdr))) {
-			result = ph(p, 0, phdr.len);
-			//if(result == -1) break;
+		if((p = pcap_next(pf, &phdr))) {
+			tv = phdr.ts;
+			arrTime = 0;
+			//fprintf(stderr, "[DEBUG] arrTime = %14.9lf\n", arrTime);
+			result = ph(p, &arrTime, phdr.len);
+
+			while((p = pcap_next(pf, &phdr))) {
+				relateTv = tvdiff(phdr.ts, tv);
+				arrTime = relateTv.tv_sec + (relateTv.tv_usec * 0.000000001);
+				//fprintf(stderr, "[DEBUG] arrTime = %14.9lf\n", arrTime);
+				result = ph(p, &arrTime, phdr.len);
+				//if(result == -1) break;
+			}
 		}
 	
 		pcap_close(pf);
 	}
 	
-	printf("%u\n", connCount());
+	//printf("%u\n", connCount());
 	return result;
 }
