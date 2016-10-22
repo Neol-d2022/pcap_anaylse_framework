@@ -98,9 +98,11 @@ int handler_prism(const unsigned char *p, void *param, unsigned int len) {
 
 	arrTime = *((double*)param);
 	txRate = rate2Mbits(rateValue);
+	if(txRate == 0.0) txRate = 1000000;
 	txTime = (double)frameSize / txRate;
 
-	printf("[DEBUG] %u bytes / %6.2lfMbit/s = %15.9lf seconds\n", frameSize, txRate / 1000000.0, txTime);
+	//printf("[DEBUG] %10u bytes / %6.2lfMbit/s = %15.9lf seconds\n", frameSize, txRate / 1000000.0, txTime);
+	printf("%15.9lf %15.9lf\n", arrTime - txTime, arrTime);
 	
 	handler_80211(p + mlen, param, len - mlen);
 	

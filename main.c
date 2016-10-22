@@ -34,7 +34,7 @@ static struct timeval tvdiff(struct timeval a, struct timeval b) {
 	c.tv_usec = a.tv_usec - b.tv_usec;
 	if(c.tv_usec < 0) {
 		c.tv_sec -= 1;
-		c.tv_usec = 1 - c.tv_usec;
+		c.tv_usec = 1000000000 - c.tv_usec;
 	} 
 
 	return c;
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 	}
 	
 	for(i = 1; i < argc; i += 1) {
-		pf = pcap_open_offline(argv[i], errbuf);
+		pf = pcap_open_offline_with_tstamp_precision(argv[i], PCAP_TSTAMP_PRECISION_NANO, errbuf);
 		if(!pf) {
 			fprintf(stderr, "[Error] Cannot open file '%s'\n%s\n", argv[i], errbuf);
 			return 1;
